@@ -14,8 +14,14 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    @Value("${jwt.key}")
-    private String jwtKey;
+    // symetric key
+    /*@Value("${jwt.key}")
+    private String jwtKey;*/
+
+    // asymetric key
+    @Value("${publicKey}")
+    private String publicKey;
+
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
@@ -25,10 +31,20 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
-    @Bean
+
+    // symetric key
+    /*@Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         var converter = new JwtAccessTokenConverter();
         converter.setSigningKey(jwtKey);
+        return converter;
+    }*/
+
+    // asymetric key
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        var converter = new JwtAccessTokenConverter();
+        converter.setVerifierKey(publicKey);
         return converter;
     }
 }
